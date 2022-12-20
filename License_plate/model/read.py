@@ -6,16 +6,13 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import tempfile
 
-path = r'~\License_plate\Data\Raw_data\validation\images\dayride_type1_001.mp4#t=594.jpg'
+path = r'..\License_plate\Data\Raw_data\validation\images\dayride_type1_001.mp4#t=594.jpg'
 model = load_model('ANP_model_mse.h5')
 
 
 def image_resize(filepath, save_path, size):
-    # load the image
     image = Image.open(filepath)
-    # resize image and ignore original aspect ratio
     img_resized = image.resize(size)
-    # save the image in the specified directory
     img_resized.save(save_path)
 
 
@@ -48,14 +45,6 @@ def object_detection(path):
     # make predictions
     coords = model.predict(image_arr)
     print(coords)
-    # denormalize the values
-    '''denorm = np.array([w, w, h, h])
-    coords = coords * denorm
-    coords = coords.astype(np.int32)
-    # draw bounding on top the image
-    xmin, xmax, ymin, ymax = coords[0]
-    pt1 = (xmin, ymin)
-    pt2 = (xmax, ymax)'''
     xmin, xmax, ymin, ymax = coords[0]
     pt1 = (int(xmin*16), int(ymin*16))
     pt2 = (int(xmax*16), int(ymax*16))

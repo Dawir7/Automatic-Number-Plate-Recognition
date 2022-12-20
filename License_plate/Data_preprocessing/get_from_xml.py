@@ -2,8 +2,8 @@ import xml.etree.ElementTree as xet
 import os
 import pickle
 
-path = r"~\License_plate\Data\Raw_data\train\label"
-des_path = r"~\License_plate\Data\Preprocessed_data\train\label"
+path = r"..\License_plate\Data\Raw_data\train\label"
+des_path = r"..\License_plate\Data\Preprocessed_data\train\label"
 
 files_list = os.listdir(path)
 labels = {}

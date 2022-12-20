@@ -3,10 +3,10 @@ import numpy as np
 from os import listdir
 import pickle
 
-PATH_train = r"~\License_plate\Data\Preprocessed_data\train\images"
-PATH_val = r"~\License_plate\Data\Preprocessed_data\validation\images"
-label_train_path = r"~\License_plate\Data\Preprocessed_data\train\label\labels_re"
-label_val_path = r"~\License_plate\Data\Preprocessed_data\validation\label\labels_re"
+PATH_train = r"..\License_plate\Data\Preprocessed_data\train\images"
+PATH_val = r"..\License_plate\Data\Preprocessed_data\validation\images"
+label_train_path = r"..\License_plate\Data\Preprocessed_data\train\label\labels_re"
+label_val_path = r"..\License_plate\Data\Preprocessed_data\validation\label\labels_re"
 
 data_train = []  # List of images saved as lists of pixels.
 labels_train = []  # List of labels for images.
@@ -42,15 +42,3 @@ for file in range(len(path_list_val)):
 data = ((data_train, labels_train), (data_val, labels_val), (data_test, labels_test))
 with open("final_data", "wb") as f:
     pickle.dump(data, f)
-
-'''
-Odczytywanie:
-
-with open("Number_data", "rb") as f:
-    data = pickle.load(f)
-
-dat, lab = data
-dat = np.asarray(dat)
-print(np.shape(dat))
-print(lab)
-'''
