@@ -2,15 +2,11 @@ import os
 
 from keras.models import load_model
 import numpy as np
-
+from keras.preprocessing.image import load_img
 import cv2
 import matplotlib.pyplot as plt
 from PIL import Image
 import tempfile
-
-path = r'D:\Python_i_pycharm\Object_Detection\License_plate\Data\Raw_data\train\images\dayride_type1_001.mp4#t=3.jpg'
-# movie = r'C:\Users\dawir\Downloads\Mercedes.mp4'
-movie = r'C:\Users\dawir\Downloads\Car.mp4'
 
 
 def image_resize(filepath, save_path, size):
@@ -22,10 +18,22 @@ def image_resize(filepath, save_path, size):
 
 def blur(img_array, er0, median, gauss, er1, can0, can1):
     temp_name = 'canny.jpg'
-    erode0 = cv2.erode(img_array, er0, iterations=1)
+    try:
+        erode0 = cv2.erode(img_array, er0, iterations=1)
+    except cv2.error:
+        print(f"Given erode 1 values were incorrect change for: (3, 5, 7)")
+        erode0 = cv2.erode(img_array, (3, 5, 7), iterations=1)
     blur0 = cv2.medianBlur(erode0, median)
-    blur1 = cv2.GaussianBlur(blur0, gauss, 0)
-    erode1 = cv2.erode(blur1, er1, iterations=1)
+    try:
+        blur1 = cv2.GaussianBlur(blur0, gauss, 0)
+    except cv2.error:
+        blur1 = cv2.GaussianBlur(blur0, (1, 1), 0)
+        print(f"Given Gaussian Blur values were incorrect change for: (1, 1)")
+    try:
+        erode1 = cv2.erode(blur1, er1, iterations=1)
+    except cv2.error:
+        print(f"Given erode 2 values were incorrect change for: (3, 5, 7)")
+        erode1 = cv2.erode(blur1, (3, 5, 7), iterations=1)
     canny = cv2.Canny(erode1, can0, can1)
     temp = tempfile.TemporaryDirectory(dir=r'..\License_plate')
     im = Image.fromarray(canny)
@@ -88,15 +96,11 @@ def main(movie_path=None, image_path=None, probability=None, margin=None, er0=No
         can1 = 120
 
     if movie_path is not None:
-
         video_cap = cv2.VideoCapture(movie_path)
         fps = video_cap.get(cv2.CAP_PROP_FPS)
         success, frame = video_cap.read()
-        plt.imshow(frame)
-        plt.show()
         image = object_detection(frame, model_isCar, model_anp, probability, margin, er0,
                                  median, gauss, er1, can0, can1)
-
         if image is not None:
             plt.figure(figsize=(10, 8))
             plt.imshow(image)
@@ -113,16 +117,10 @@ def main(movie_path=None, image_path=None, probability=None, margin=None, er0=No
                     plt.show()
             count += 1
     if image_path is not None:
-        img = Image.open(image_path)
+        img = load_img(image_path)
         image = object_detection(img, model_isCar, model_anp, probability, margin,
                                  er0, median, gauss, er1, can0, can1)
         if image is not None:
             plt.figure(figsize=(10, 8))
             plt.imshow(image)
             plt.show()
-
-
-# main(image_path=path)
-# main(movie_path="Car.mp4")
-'''main(image_path=path, probability=0.75, margin=0.025, er0=(3, 5, 7), median=5, gauss=(25, 25),
-         er1=(3, 5, 7), can0=80, can1=120)'''
