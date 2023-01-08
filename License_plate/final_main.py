@@ -1,6 +1,6 @@
 from keras.models import load_model
 import numpy as np
-from keras.preprocessing.image import load_img
+
 import cv2
 import matplotlib.pyplot as plt
 from PIL import Image
@@ -101,7 +101,7 @@ def main(movie_path=None, image_path=None, probability=None, margin=None, er0=No
                     plt.show()
             count += 1
     if image_path is not None:
-        img = load_img(path)
+        img = Image.open(image_path)
         image = object_detection(img, model_isCar, model_anp, probability, margin,
                                  er0, median, gauss, er1, can0, can1)
         if image is not None:
